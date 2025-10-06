@@ -1,40 +1,32 @@
-ESX = Config.Framework == 'esx' and exports['es_extended']:getSharedObject() or nil
-QBCore = Config.Framework == 'qbcore' and exports['qb-core']:GetCoreObject() or nil
-
-if ESX == nil and QBCore == nil then
-  print('^1[ERROR]^1: Framework not set or not found. Please check your config.lua file. Current Config.Framework: ' .. tostring(Config.Framework) .. '^7')
+ESX = exports["es_extended"]:getSharedObject()
+-- Verificar que ESX esté cargado
+if not ESX then
+  print('^1[ERROR] AX_PauseMenu: ESX no está cargado. Verifica que es_extended esté iniciado antes que este script.^7')
+  return
 end
 
-lib.callback.register('KF_PauseMenu:GetPlayerData', function(src)
-  if Config.Framework == 'esx' then
-    local xPlayer = ESX.GetPlayerFromId(src)
-    local identifier = xPlayer.identifier
-
-    local playerData = {
-      ['playerJob'] = Config.GetJob and Config.GetJob(src) or nil,
-      ['playerJob2'] = Config.GetJob2 and Config.GetJob2(src) or nil,
-      ['playerName'] = xPlayer.getName(),
-      ['citizenId'] = Config.GetPlayerIdentifier(src),
-      ['onlinePlayers'] = #ESX.GetPlayers(),
-    }
-
-    return playerData
-  elseif Config.Framework == 'qbcore' then
-    local xPlayer = QBCore.Functions.GetPlayer(src)
-    local identifier = xPlayer.PlayerData.citizenid
-
-    local playerData = {
-      ['playerJob'] = Config.GetJob and Config.GetJob(src) or nil,
-      ['playerJob2'] = Config.GetJob2 and Config.GetJob2(src) or nil,
-      ['playerName'] = xPlayer.PlayerData.charinfo.firstname .. ' ' .. xPlayer.PlayerData.charinfo.lastname,
-      ['citizenId'] = Config.GetPlayerIdentifier(src),
-      ['onlinePlayers'] = #QBCore.Functions.GetPlayers(),
-    }
-
-    return playerData
+-- Callback para obtener datos del jugador
+lib.callback.register('AX_PauseMenu:GetPlayerData', function(source)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  
+  if not xPlayer then
+    print('^1[ERROR] AX_PauseMenu: No se pudo obtener xPlayer para el jugador ' .. source .. '^7')
+    return nil
   end
+
+  local playerData = {
+    playerJob = Config.GetJob and Config.GetJob(source) or 'Desempleado',
+    playerJob2 = Config.GetJob2 and Config.GetJob2(source) or nil,
+    playerName = Config.GetPlayerName and Config.GetPlayerName(source) or xPlayer.getName(),
+    citizenId = Config.GetPlayerIdentifier and Config.GetPlayerIdentifier(source) or 'UNKNOWN',
+    onlinePlayers = #ESX.GetExtendedPlayers(),
+    discordLink = Config.DiscordLink or 'https://discord.gg/ejemplo',
+  }
+
+  return playerData
 end)
 
+-- Función para obtener Discord ID del jugador
 function GetDiscordID(src)
   local identifiers = GetPlayerIdentifiers(src)
   local discord = nil
@@ -50,22 +42,42 @@ function GetDiscordID(src)
   return discord
 end
 
+-- Función para solicitar datos de Discord API
 function RequestDiscord(discord_id)
+  if not Config.BotToken or Config.BotToken == '' then
+    return nil
+  end
+
   local request_url = 'https://discord.com/api/v10/users/' .. discord_id
   local prom = promise:new()
+  
   PerformHttpRequest(request_url, function(statusCode, response, headers)
-    local data = response and json.decode(response) or nil
-    prom:resolve(data)
+    if statusCode == 200 then
+      local data = response and json.decode(response) or nil
+      prom:resolve(data)
+    else
+      prom:resolve(nil)
+    end
   end, 'GET', '', { 
     ['Authorization'] = 'Bot ' .. Config.BotToken 
   })
+  
   return Citizen.Await(prom)
 end
 
-lib.callback.register('KF_PauseMenu:GetDiscordAvatar', function(src)
-  local discord_id = GetDiscordID(src)
-  if not discord_id then return nil end
+-- Callback para obtener avatar de Discord
+lib.callback.register('AX_PauseMenu:GetDiscordAvatar', function(source)
+  local discord_id = GetDiscordID(source)
+  
+  if not discord_id then 
+    return {
+      avatar = nil,
+      discord_id = nil
+    }
+  end
+  
   local response = RequestDiscord(discord_id)
+  
   if not response then 
     return { 
       avatar = nil,
@@ -78,16 +90,36 @@ lib.callback.register('KF_PauseMenu:GetDiscordAvatar', function(src)
     discord_id = discord_id
   }
 end)
-  
-function milliseconds_to_date(ms)
-  local timestamp = math.floor(ms / 1000)
-  local date_string = os.date("%d/%m/%Y %H:%M:%S", timestamp)
-  return date_string
-end
 
-RegisterServerEvent('quitServer')
-AddEventHandler('quitServer', function()
+-- Evento para salir del servidor
+RegisterServerEvent('AX_PauseMenu:QuitServer')
+AddEventHandler('AX_PauseMenu:QuitServer', function()
   local src = source
   Config.ExitFunction(src)
 end)
 
+-- Comando de administrador para recargar el menú de un jugador (opcional)
+ESX.RegisterCommand('reloadpausemenu', 'admin', function(xPlayer, args, showError)
+  local targetId = args.playerId
+  
+  if not targetId then
+    xPlayer.showNotification('Uso: /reloadpausemenu [ID]')
+    return
+  end
+  
+  local targetPlayer = ESX.GetPlayerFromId(targetId)
+  
+  if not targetPlayer then
+    xPlayer.showNotification('Jugador no encontrado')
+    return
+  end
+  
+  TriggerClientEvent('chat:addMessage', xPlayer.source, {
+    args = {'Sistema', 'Menú de pausa recargado para el jugador ' .. targetId}
+  })
+end, false, {help = 'Recargar el menú de pausa de un jugador', validate = true, arguments = {
+  {name = 'playerId', help = 'ID del jugador', type = 'number'}
+}})
+
+-- Log de inicio
+print('^2[AX_PauseMenu]^7 Script iniciado correctamente para ESX 1.11.4')

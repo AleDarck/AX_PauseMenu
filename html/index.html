@@ -1,113 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KF PauseMenu</title>
+  <title>AX PauseMenu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdn.lineicons.com/3.0/lineicons.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body id="page">
   <div class="container">
-    <div id="player-info" class="player-info">
+    
+    <!-- HEADER CON AVATAR -->
+    <div class="header-section">
       <img src="images/guest.png" alt="" id="player-avatar" class="player-avatar">
-      <div class="player-text-infos">
-        <div class="left-data">
-          <div class="player-name-container">
-            <span class="player-name" id="player-name">Giuseppe Del Papa</span>
-          </div>
+      <h1 id="player-name" class="player-name">NOMBRE APELLIDO</h1>
+    </div>
 
-          <div class="job-container">
-            <div class="job-name" id="job1">
-              <span class="job-icon">
-                <i class="fa-solid fa-briefcase"></i>
-              </span>
-              <span id="job1name">Polizia</span>
-            </div>
-            <div class="job-name" id="job2">
-              <span class="job-icon">
-                <i class="fa-solid fa-mask"></i>
-              </span>
-              <span id="job2name">Criminale</span>
-            </div>
+    <!-- INFO ROW -->
+    <div class="info-row">
+      <!-- BANCO (IZQUIERDA) -->
+      <div class="info-box bank-box">
+        <i class="lni lni-credit-cards"></i>
+        <div class="info-content">
+          <span class="info-label">BANCO</span>
+          <span class="info-value" id="text-bank">$0</span>
+        </div>
+      </div>
+
+      <!-- JOB, RANGO, ID (CENTRO) -->
+      <div class="center-boxes">
+        <div class="info-box job-box">
+          <span id="job-name">Desempleado</span>
+        </div>
+        <div class="info-box rank-box">
+          <span id="job-rank">Sin rango</span>
+        </div>
+        <div class="info-box id-box">
+          <span>ID: <span id="player-id">000000</span></span>
+        </div>
+      </div>
+
+      <!-- VICOINS Y USUARIOS (DERECHA) -->
+      <div class="right-info">
+        <div class="info-box vicoin-box">
+          <i class="fa-brands fa-vimeo-v"></i>
+          <div class="info-content">
+            <span class="info-label">VICOINS</span>
+            <span class="info-value" id="text-vicoin">0</span>
           </div>
         </div>
-        <!-- If you want to put a logo on the right, uncomment this and .server-logo class in style.css -->
-        <!-- <div class="right-data">
-          <img src="images/logo.png" alt="" class="server-logo">
-        </div> -->
-      </div>
-      <div class="working-bars">
+        <div class="info-box users-box">
+          <div class="users-content">
+            <span class="users-number" id="online-players">0/128</span>
+            <span class="users-text">USUARIOS</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="main-functions">
-      <div class="map" id="map-btn">
-        <div class="background"></div>
-        <div class="map-items-container">
-          <span class="map-icon">
-            <i class="fa-solid fa-map-location-dot"></i>
-          </span>
-          <spa class="map-label">MAP</spa>
+
+    <!-- ESTADÍSTICAS -->
+    <div class="stats-container">
+      <div class="stat-item">
+        <i class="fa-solid fa-car"></i>
+        <div class="stat-info">
+          <span class="stat-label">CONDUCCIÓN</span>
+          <span class="stat-value" id="stat-driving">0%</span>
         </div>
       </div>
+      <div class="stat-item">
+        <i class="fa-solid fa-bullseye"></i>
+        <div class="stat-info">
+          <span class="stat-label">PUNTERÍA</span>
+          <span class="stat-value" id="stat-shooting">0%</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <i class="fa-solid fa-lungs"></i>
+        <div class="stat-info">
+          <span class="stat-label">RESISTENCIA</span>
+          <span class="stat-value" id="stat-stamina">0%</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <i class="fa-solid fa-dumbbell"></i>
+        <div class="stat-info">
+          <span class="stat-label">FUERZA</span>
+          <span class="stat-value" id="stat-strength">0%</span>
+        </div>
+      </div>
+    </div>
 
-      <div class="main-functions-right">
-        <div class="settings" id="settings-btn">
+    <!-- SECCIÓN PRINCIPAL -->
+    <div class="main-section">
+      <!-- COLUMNA IZQUIERDA -->
+      <div class="left-column">
+        <!-- MAPA -->
+        <div class="map-btn" id="map-btn">
           <div class="background"></div>
-          <div class="settings-items-container">
-            <span class="settings-icon">
-              <i class="fa-solid fa-gear"></i>
-            </span>
-            <span class="settings-label">SETTINGS</span>
+          <div class="btn-content">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>MAPA</span>
           </div>
         </div>
 
-        <div class="right-split">
-          <div class="discord" id="discord-btn">
-            <div class="background"></div>
-            <div class="discord-items-container">
-              <span class="discord-icon">
-                <i class="fa-solid fa-scale-balanced"></i>
-              </span>
-              <span class="discord-label">RULES</span>
+        <!-- BOTONES AJUSTES Y SALIR -->
+        <div class="left-buttons">
+          <div class="btn-small settings-btn" id="settings-btn">
+            <div class="btn-bg"></div>
+            <div class="btn-content-small">
+              <i class="fa-solid fa-gear"></i>
+              <span>AJUSTES</span>
             </div>
           </div>
-          <div class="exit" id="exit-btn">
-            <div class="background"></div>
-            <div class="exit-items-container">
-              <span class="exit-icon">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-              </span>
-              <span class="exit-label">
-                EXIT
-              </span>
+          <div class="btn-small exit-btn" id="exit-btn">
+            <div class="btn-bg"></div>
+            <div class="btn-content-small">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              <span>SALIR</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="footer-info">
-      <div class="online-players">
-        <span class="online-players-icon">
-          <i class="fa-solid fa-id-card"></i>
-        </span>
-        <div class="online-players-info">
-          <span class="online-players-label">CITIZEN ID</span>
-          <span class="online-players-value" id="citizen-id">AA1111</span>
+
+      <!-- COLUMNA CENTRO -->
+      <div class="center-column">
+        <!-- SERVICIOS Y RACING -->
+        <div class="center-buttons-top">
+          <div class="btn-horizontal servicios-general-btn" id="servicios-general-btn">
+            <div class="btn-bg"></div>
+            <div class="btn-content-horizontal">
+              <span>SERVICIOS</span>
+            </div>
+          </div>
+          <div class="btn-horizontal racing-btn" id="racing-btn">
+            <div class="btn-bg"></div>
+            <div class="btn-content-horizontal">
+              <span>RACING</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTONES ADICIONALES -->
+        <div class="center-buttons-bottom">
+          <div class="btn-icon reportar-btn" id="reportar-btn">
+            <img src="images/reporte.png" alt="Reportar">
+            <span>REPORTAR</span>
+          </div>
+          <div class="btn-icon daily-btn" id="daily-btn">
+            <img src="images/daily.png" alt="Daily">
+            <span>DAILY REWARD</span>
+          </div>
+          <div class="btn-icon editor-btn" id="editor-btn">
+            <img src="images/logorockstar.png" alt="Editor">
+            <span>ROCKSTAR EDITOR</span>
+          </div>
+          <div class="btn-icon robos-btn" id="robos-btn">
+            <img src="images/robos.png" alt="Robos">
+            <span>ROBOS</span>
+          </div>
         </div>
       </div>
-      <div class="player-login-info">
-        <span class="player-login-info-icon">
-          <i class="fa-solid fab fa-discord"></i>
-        </span>
-        <div class="player-login-info-text">
-          <span class="player-login-info-label">DISCORD</span>
-          <span class="player-login-info-value" id="last-login">https://discord.gg/kfdev</span>
+
+      <!-- COLUMNA DERECHA -->
+      <div class="right-column">
+        <!-- SERVICIOS Y FACTURAS -->
+        <div class="services-facturas">
+          <!-- SERVICIOS -->
+          <div class="vertical-box servicios-box">
+            <div class="box-header">
+              <i class="fa-solid fa-bell"></i>
+              <span>SERVICIOS</span>
+            </div>
+            <div class="box-content" id="servicios-list">
+              <!-- Contenido dinámico -->
+            </div>
+          </div>
+
+          <!-- FACTURAS -->
+          <div class="vertical-box facturas-box">
+            <div class="box-header">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+              <span>FACTURAS</span>
+            </div>
+            <div class="box-content" id="facturas-list">
+              <!-- Contenido dinámico -->
+            </div>
+          </div>
+        </div>
+
+        <!-- NEGOCIOS -->
+        <div class="vertical-box negocios-box">
+          <div class="box-header">
+            <i class="fa-solid fa-store"></i>
+            <span>NEGOCIOS</span>
+          </div>
+          <div class="box-content" id="negocios-list">
+            <!-- Contenido dinámico -->
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
-  <script src="js/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

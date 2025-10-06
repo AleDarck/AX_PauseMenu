@@ -14,15 +14,28 @@ window.addEventListener('message', (event) => {
 })
 
 const updateMenu = (data) => {
-  document.getElementById('player-name').innerText = data.playerName;
-  document.getElementById('job1name').innerText = data.playerJob == 'Disoccupato - Disoccupato' ? 'Disoccupato' : data.playerJob;
-  document.getElementById('job2name').innerText = data.playerJob2 == 'Disoccupato - Disoccupato' ? 'Disoccupato' : data.playerJob2;
-  if (!data.playerJob2 || data.playerJob2 == 'Unemployed - Unemployed') {
-    document.getElementById('job2').style.display = 'none';
-  } else {
+  // Actualizar nombre del jugador
+  document.getElementById('player-name').innerText = data.playerName || 'Desconocido';
+  
+  // Actualizar trabajo principal
+  const job1Text = data.playerJob || 'Desempleado';
+  document.getElementById('job1name').innerText = job1Text;
+  
+  // Actualizar trabajo secundario si existe
+  if (data.playerJob2 && data.playerJob2 !== 'Unemployed - Unemployed' && data.playerJob2 !== 'Desempleado - Desempleado') {
     document.getElementById('job2').style.display = 'flex';
+    document.getElementById('job2name').innerText = data.playerJob2;
+  } else {
+    document.getElementById('job2').style.display = 'none';
   }
-  document.getElementById('citizen-id').innerText = data.citizenId;
+  
+  // Actualizar Citizen ID
+  document.getElementById('citizen-id').innerText = data.citizenId || 'UNKNOWN';
+  
+  // Actualizar link de Discord en el footer
+  if (data.discordLink) {
+    document.getElementById('last-login').innerText = data.discordLink;
+  }
 }
 
 const hideMenu = () => {
@@ -35,58 +48,95 @@ const showMenu = () => {
   document.getElementById('page').style.backgroundColor = 'rgba(17, 17, 17, 0.74)';
 }
 
+// Botón de ajustes
 document.getElementById('settings-btn').addEventListener('click', () => {
-  fetch(`https://KF_PauseMenu/settings`);
+  fetch(`https://AX_PauseMenu/settings`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
 })
 
-document.getElementById('discord-btn').addEventListener('click', () => {
-  fetch(`https://KF_PauseMenu/rules`);
-  window.invokeNative("openUrl", "https://docs.google.com/document/d/1SaQmuQiD3M4GX92szuFnTt4eu9lA8MbyK5b3PFeZcao/edit?tab=t.0");
-})
-
+// Botón de mapa
 document.getElementById('map-btn').addEventListener('click', () => {
-  fetch(`https://KF_PauseMenu/map`);
+  fetch(`https://AX_PauseMenu/map`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
 })
 
+// Botón de salir
 document.getElementById('exit-btn').addEventListener('click', () => {
-  fetch(`https://KF_PauseMenu/exit`);
+  fetch(`https://AX_PauseMenu/exit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
 })
 
+// Cerrar con ESC
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     hideMenu();
-    fetch(`https://KF_PauseMenu/close`);
+    fetch(`https://AX_PauseMenu/close`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
   }
 })
 
+// Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-  fetch(`https://KF_PauseMenu/ready`);
+  fetch(`https://AX_PauseMenu/ready`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  });
   getAvatar();
 });
 
-document.querySelector('.player-login-info').addEventListener('click', () => {
-  fetch(`https://KF_PauseMenu/checkDonations`);
-})
-
+// Obtener avatar de Discord
 async function getAvatar() {
-  fetch(`https://KF_PauseMenu/GetDiscordAvatar`).then((res) => {
+  fetch(`https://AX_PauseMenu/GetDiscordAvatar`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+  }).then((res) => {
     res.json().then((data) => {
       let avatar = data.avatar;
       DISCORD_ID = data.discord_id;
 
-      if (avatar) {
+      if (avatar && DISCORD_ID) {
         if (avatar.startsWith('a_')) {
           avatar = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.avatar}.gif`;
         } else {
           avatar = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${data.avatar}.png`;
         }
       } else {
-        // avatar = 'https://biografieonline.it/img/bio/box/b/Benito_Mussolini.jpg';
         avatar = "images/guest.png";
       }
         
-      // console.log(avatar);
       document.getElementById('player-avatar').src = avatar;
-    })
-  })
+    }).catch((error) => {
+      console.log('Error al obtener avatar:', error);
+      document.getElementById('player-avatar').src = "images/guest.png";
+    });
+  }).catch((error) => {
+    console.log('Error en la petición de avatar:', error);
+    document.getElementById('player-avatar').src = "images/guest.png";
+  });
 }

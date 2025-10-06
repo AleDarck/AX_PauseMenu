@@ -31,57 +31,70 @@ Config.BotToken = '' -- Optional
 -- You can experiment with this value but I suggest to keep it around 3-5.
 Config.PauseMenuTick = 5
 
--- [[ COMMAND ]]
+-- [[ COMANDO ]]
 Config.EnableCommand = true
-Config.Command = 'openpausemenu'
-Config.EnableKeyMapping = true -- Only works if EnableCommand is set to true
+Config.Command = 'pausemenu'
+Config.EnableKeyMapping = true -- Solo funciona si EnableCommand es true
 Config.KeyMapping = 'ESCAPE'
 
--- [[ EXIT Button ]] --
--- This is the button that will be used to close the pause menu.
 Config.ExitFunction = function(src)
-  DropPlayer(src, 'You have exited the server.')
+  DropPlayer(src, 'Has salido del servidor.')
 end
 
--- [[ SERVER-SIDE FUNCTIONS ]]
--- Getting Job data
+
+Config.DiscordLink = 'https://discord.gg/tu-servidor'
+Config.RulesLink = 'https://docs.google.com/document/d/tu-documento-de-reglas'
+
+-- [[ DATOS DEL JUGADOR ]] --
+
+-- Obtener trabajo principal
 Config.GetJob = function(src)
-  if Config.Framework == 'esx' then
-    return ESX.GetPlayerFromId(src).job.label .. ' - ' .. ESX.GetPlayerFromId(src).job.grade_label
-  elseif Config.Framework == 'qbcore' then
-    return QBCore.Functions.GetPlayer(src).PlayerData.job and QBCore.Functions.GetPlayer(src).PlayerData.job.label .. ' - ' .. QBCore.Functions.GetPlayer(src).PlayerData.job.grade.name or 'Unemployed'
-  end
+  local xPlayer = ESX.GetPlayerFromId(src)
+  if not xPlayer then return 'Desconocido' end
+  
+  local job = xPlayer.getJob()
+  if not job then return 'Desempleado' end
+  
+  return job.label .. ' - ' .. job.grade_label
 end
 
--- Job2 function
--- Please note that this works ONLY if you have added a job2 in your framework
--- By default it's disabled, you can enable it by replacing NIL with the function
--- commented below and setup it as your job system requires.
+-- Obtener trabajo secundario (si tu servidor usa job2)
+-- Por defecto está desactivado (nil)
+-- Si tu ESX tiene job2, descomenta y configura esta función
 Config.GetJob2 = nil
--- function(src)
---   if Config.Framework == 'esx' then
---     if ESX.GetPlayerFromId().job2 == nil then
---       return false
---     end
---     return ESX.GetPlayerFromId().job2.name
---   elseif Config.Framework == 'qbcore' then
---     if QBCore.Functions.GetPlayerFromId().job2 == nil then
---       return false
---     end
---     return QBCore.Functions
---   end
--- end
-
-Config.GetPlayerIdentifier = function(src)
-  if Config.Framework == 'esx' then
-    -- Normally it should be ESX.GetPlayerData().identifier but since it's value
-    -- is too big (Usually 64 chars) i suggest to use any other identifier or put
-    -- any custom value you want to use.
-    -- Since in my custom server i've implemented the CitizenID in ESX, i'll use it.
-    -- Change it as your needs.
-    return ESX.GetPlayerFromId(src).identifier
-  elseif Config.Framework == 'qbcore' then
-    -- The QBCore CitizenID is a good identifier to use, since it's really short
-    return QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+--[[
+Config.GetJob2 = function(src)
+  local xPlayer = ESX.GetPlayerFromId(src)
+  if not xPlayer then return nil end
+  
+  -- Ejemplo si tu ESX tiene job2
+  local job2 = xPlayer.job2
+  if not job2 or job2.name == 'unemployed' then
+    return nil
   end
+  
+  return job2.label .. ' - ' .. job2.grade_label
+end
+]]
+
+-- Obtener identificador del jugador
+Config.GetPlayerIdentifier = function(src)
+  local xPlayer = ESX.GetPlayerFromId(src)
+  if not xPlayer then return 'UNKNOWN' end
+  
+  -- Puedes usar el identifier completo o crear un ID personalizado
+  -- Opción 1: Usar los últimos 8 caracteres del identifier
+  local identifier = xPlayer.identifier
+  return string.upper(string.sub(identifier, -8))
+  
+  -- Opción 2: Si tienes un sistema de Citizen ID personalizado en tu base de datos
+  -- return MySQL.scalar.await('SELECT citizen_id FROM users WHERE identifier = ?', {identifier})
+end
+
+-- Obtener nombre del jugador
+Config.GetPlayerName = function(src)
+  local xPlayer = ESX.GetPlayerFromId(src)
+  if not xPlayer then return 'Desconocido' end
+  
+  return xPlayer.getName()
 end
