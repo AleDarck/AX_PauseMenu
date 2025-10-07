@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AX PauseMenu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&family=Fugaz+One&display=swap" rel="stylesheet">
   <link href="https://cdn.lineicons.com/3.0/lineicons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -203,6 +204,56 @@
     </div>
 
   </div>
+
+
+  <!-- MODAL SALIR -->
+<div class="modal-overlay" id="exit-modal" style="display: none;">
+  <div class="modal-exit">
+    <div class="modal-exit-text">¿Qué deseas hacer?</div>
+    <div class="modal-exit-buttons">
+      <div class="modal-btn cambiar-btn" id="cambiar-personaje-btn">
+        <i class="fa-solid fa-user-group"></i>
+        <span>CAMBIAR PERSONAJE</span>
+      </div>
+      <div class="modal-btn salir-btn" id="salir-servidor-btn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>SALIR</span>
+      </div>
+      <div class="modal-btn cancelar-btn" id="cancelar-exit-btn">
+        <i class="fa-solid fa-xmark"></i>
+        <span>CANCELAR</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ROBOS -->
+<div class="modal-overlay" id="robos-modal" style="display: none;">
+  <div class="modal-robos">
+    <div class="robos-left">
+      <div class="robos-header">
+        <i class="fa-solid fa-mask"></i>
+        <span>ROBOS DISPONIBLES</span>
+      </div>
+      <div class="robos-list" id="robos-list">
+        <!-- Se llenará dinámicamente -->
+      </div>
+    </div>
+    <div class="robos-right">
+      <div class="normas-header">
+        <i class="fa-solid fa-book"></i>
+        <span>NORMAS Y PAUTAS A TENER</span>
+      </div>
+      <div class="normas-content" id="normas-content">
+        <!-- Se llenará desde config -->
+      </div>
+    </div>
+    <div class="close-robos-btn" id="close-robos-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+  </div>
+</div>
+
 
   <script src="script.js"></script>
 </body>

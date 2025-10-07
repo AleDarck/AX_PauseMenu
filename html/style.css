@@ -3,9 +3,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700&display=swap');
 
 :root {
-  --primary: rgb(91, 0, 133);
-  --secondary: rgb(141, 0, 223);
-  --primary-shadow: rgba(91, 0, 133, 0.5);
+  --primary:
+  rgb(133 0 0);
+  --secondary:
+  rgb(223 0 0);
+  --primary-shadow:
+  rgb(133 0 0 / 50%);
 }
 
 * {
@@ -37,7 +40,7 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  width: 1100px;
+  width: 1130px;
   gap: 10px;
   align-items: center;
   justify-content: center;
@@ -47,9 +50,8 @@ body {
 .header-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 5px;
   width: 100%;
+  align-items: center;
 }
 
 .player-avatar {
@@ -92,12 +94,12 @@ body {
 /* Banco */
 .bank-box {
   min-width: 180px;
+  background-color: rgba(0, 100, 0, 0.3); /* Verde oscuro */
 }
 
-.bank-box i {
-  font-size: 28px;
-  color: var(--secondary);
-  filter: drop-shadow(0px 0px 20px var(--primary-shadow));
+.vicoin-box {
+  min-width: 150px;
+  background-color: rgba(100, 0, 100, 0.3); /* Morado oscuro */
 }
 
 .info-content {
@@ -158,6 +160,8 @@ body {
   min-width: 120px;
   padding: 8px 12px;
   justify-content: center;
+  background-color: transparent;
+  border: none;
 }
 
 .users-content {
@@ -180,7 +184,7 @@ body {
   opacity: 0.8;
 }
 
-/* ===== ESTADÃƒÂSTICAS ===== */
+/* ===== ESTADÃƒÆ’Ã‚ÂSTICAS ===== */
 .stats-container {
   width: 135%;
   display: flex;
@@ -201,8 +205,7 @@ body {
 
 .stat-item i {
   font-size: 30px;
-  color: #b5b5b5;
-  filter: drop-shadow(0px 0px 15px rgb(133 0 0 / 50%));
+  color: #ffffff;
 }
 
 .stat-info {
@@ -224,12 +227,12 @@ body {
   line-height: 24px;
 }
 
-/* ===== SECCIÃƒâ€œN PRINCIPAL ===== */
+/* ===== SECCIÃƒÆ’Ã¢â‚¬Å“N PRINCIPAL ===== */
 .main-section {
   display: flex;
   width: 135%;
   gap: 15px;
-  height: 600px;
+  height: 640px;
 }
 
 /* COLUMNA IZQUIERDA */
@@ -237,7 +240,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 400px;
+  width: 420px;
 }
 
 .map-btn {
@@ -281,13 +284,12 @@ body {
 }
 
 .map-btn i {
-  font-size: 80px;
+  font-size: 120px;
   color: #ffffff;
-  filter: drop-shadow(0px 0px 20px rgba(157, 255, 0, 0.5));
 }
 
 .map-btn span {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Fugaz One';
   font-size: 32px;
 }
 
@@ -353,17 +355,16 @@ body {
 }
 
 .btn-content-small i {
-  font-size: 40px;
+  font-size: 50px;
 }
 
 .btn-content-small span {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Fugaz One';
   font-size: 20px;
 }
 
 .settings-btn i {
-  color: rgb(255, 166, 0);
-  filter: drop-shadow(0px 0px 20px rgba(255, 166, 0, 0.6));
+  color: rgb(255 255 255);
 }
 
 .exit-btn i {
@@ -383,7 +384,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 300px;
+  height: 340px;
 }
 
 .btn-horizontal {
@@ -447,8 +448,8 @@ body {
 }
 
 .btn-content-horizontal span {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
+  font-family: 'Fugaz One';
+  font-size: 35px;
 }
 
 .center-buttons-bottom {
@@ -543,16 +544,16 @@ body {
 }
 
 .servicios-box {
-  height: 53%;
+  height: 55%;
 }
 
 .facturas-box {
-  height: 50%;
+  height: 45%;
 }
 
 /* NEGOCIOS */
 .negocios-box {
-  width: 370px;
+  width: 390px;
 }
 
 /* Scrollbar personalizado */
@@ -572,4 +573,460 @@ body {
 
 .box-content::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+/* TamaÃ±os individuales de iconos */
+.reportar-btn img {
+  width: 50px;
+  height: 50px;
+}
+
+.daily-btn img {
+  width: 50px;
+  height: 50px;
+}
+
+.editor-btn img {
+  width: 90px;
+  height: 60px;
+}
+
+.robos-btn img {
+  width: 50px;
+  height: 50px;
+}
+
+/* MODALES */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 56%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* MODAL SALIR */
+.modal-exit {
+  background: rgb(12 12 12);
+  border: 3px solid #353535;
+  border-radius: 15px;
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.modal-exit-text {
+  font-family: 'Fugaz One';
+  font-size: 35px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.modal-exit-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.modal-btn {
+  background: rgba(20, 20, 20, 0.8);
+  border: 3px solid #353535;
+  border-radius: 15px;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.modal-btn:hover {
+  filter: brightness(1.2);
+}
+
+.modal-btn:active {
+  filter: brightness(0.9);
+}
+
+.modal-btn i {
+  font-size: 40px;
+}
+
+.cambiar-btn i {
+  color: #3b82f6;
+}
+
+.salir-btn i {
+  color: #ef4444;
+}
+
+.cancelar-btn i {
+  color: #6b7280;
+}
+
+.modal-btn span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+}
+
+/* MODAL ROBOS */
+.modal-robos {
+  background: rgb(12 12 12);
+  border: 3px solid #353535;
+  border-radius: 15px;
+  padding: 25px;
+  display: flex;
+  gap: 20px;
+  width: 1100px;
+  height: 600px;
+  position: relative;
+}
+
+.robos-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.robos-right {
+  width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.robos-header,
+.normas-header {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 12px 15px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #353535;
+}
+
+.robos-header i,
+.normas-header i {
+  font-size: 20px;
+  color: var(--secondary);
+}
+
+.robos-header span,
+.normas-header span {
+  font-family: 'Fugaz One';
+  font-size: 18px;
+}
+
+.robos-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.robo-item {
+  background: rgba(20, 20, 20, 0.8);
+  border: 2px solid #353535;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.robo-item.disponible {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.robo-item.no-disponible {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.robo-name {
+  font-family: 'Fugaz One';
+  font-size: 18px;
+}
+
+.robo-status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.robo-status.disponible {
+  background: #22c55e;
+  color: white;
+}
+
+.robo-status.no-disponible {
+  background: #ef4444;
+  color: white;
+}
+
+.normas-content {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #353535;
+  border-radius: 10px;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.close-robos-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: rgba(239, 68, 68, 0.8);
+  border: 2px solid #ef4444;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.close-robos-btn:hover {
+  background: #ef4444;
+}
+
+/* SERVICIOS - Items */
+.servicio-card {
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.servicio-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 30%);
+  z-index: 1;
+}
+
+.servicio-card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.servicio-icon-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.3));
+}
+
+.servicio-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.servicio-titulo {
+  font-family: 'Poppins';
+  font-size: 15px;
+  line-height: 1;
+}
+
+.servicio-estado {
+  font-size: 21px;
+  font-weight: bold;
+  font-family: 'Fugaz One';
+  text-transform: uppercase;
+}
+
+.servicio-estado.disponible {
+  color: #22c55e;
+}
+
+.servicio-estado.no-disponible {
+  color: #ef4444;
+}
+
+/* Backgrounds para cada servicio */
+.servicio-card.police {
+  background-image: url('images/policepor.png');
+}
+
+.servicio-card.ambulance {
+  background-image: url('images/emspor.png');
+}
+
+.servicio-card.realestate {
+  background-image: url('images/mecapor.png');
+}
+
+/* NEGOCIOS - Items */
+.negocio-card {
+  background: rgba(20, 20, 20, 0.8);
+  border: 2px solid #353535;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.negocio-card.abierto {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.negocio-card.cerrado {
+  border-color: #6b7280;
+  background: rgba(107, 114, 128, 0.1);
+}
+
+.negocio-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.negocio-nombre {
+  flex: 1;
+  font-family: 'Fugaz One';
+  text-transform: uppercase;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.negocio-ubicacion-btn {
+  width: 35px;
+  height: 35px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.negocio-ubicacion-btn:hover {
+  background: rgba(59, 130, 246, 0.4);
+  transform: scale(1.1);
+}
+
+.negocio-ubicacion-btn i {
+  font-size: 16px;
+  color: #3b82f6;
+}
+
+/* SERVICIO ESPECIAL (TAXI) */
+.servicio-especial-card {
+  background: rgba(20, 20, 20, 0.8);
+  border: 2px solid #f59e0b;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.servicio-especial-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.servicio-especial-nombre {
+  flex: 1;
+  font-family: 'Fugaz One';
+  font-size: 18px;
+  line-height: 1.2;
+  color: #f59e0b;
+}
+
+.servicio-especial-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.servicio-especial-btn {
+  width: 35px;
+  height: 35px;
+  border: 2px solid;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.servicio-especial-btn:hover {
+  transform: scale(1.1);
+}
+
+.btn-llamar {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+}
+
+.btn-llamar:hover {
+  background: rgba(34, 197, 94, 0.4);
+}
+
+.btn-llamar i {
+  font-size: 16px;
+  color: #22c55e;
+}
+
+.btn-ubicacion {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.btn-ubicacion:hover {
+  background: rgba(59, 130, 246, 0.4);
+}
+
+.btn-ubicacion i {
+  font-size: 16px;
+  color: #3b82f6;
+}
+
+/* Servicio Taxi en tabla de servicios */
+.servicio-card.taxi {
+  background-image: url('images/taxipor.png');
 }
