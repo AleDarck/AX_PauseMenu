@@ -20,12 +20,21 @@
 
     <!-- INFO ROW -->
     <div class="info-row">
-      <!-- BANCO (IZQUIERDA) -->
-      <div class="info-box bank-box">
-        <i class="lni lni-credit-cards"></i>
-        <div class="info-content">
-          <span class="info-label">BANCO</span>
-          <span class="info-value" id="text-bank">$0</span>
+      <!-- BANCO Y VICOIN (IZQUIERDA) -->
+      <div class="left-info">
+        <div class="info-box bank-box">
+          <i class="fa-solid fa-vault"></i>
+          <div class="info-content">
+            <span class="info-label">BANCO</span>
+            <span class="info-value" id="text-bank">$0</span>
+          </div>
+        </div>
+        <div class="info-box vicoin-box">
+          <i class="fa-brands fa-vimeo-v"></i>
+          <div class="info-content">
+            <span class="info-label">VICOINS</span>
+            <span class="info-value" id="text-vicoin">0</span>
+          </div>
         </div>
       </div>
 
@@ -42,20 +51,11 @@
         </div>
       </div>
 
-      <!-- VICOINS Y USUARIOS (DERECHA) -->
-      <div class="right-info">
-        <div class="info-box vicoin-box">
-          <i class="fa-brands fa-vimeo-v"></i>
-          <div class="info-content">
-            <span class="info-label">VICOINS</span>
-            <span class="info-value" id="text-vicoin">0</span>
-          </div>
-        </div>
-        <div class="info-box users-box">
-          <div class="users-content">
-            <span class="users-number" id="online-players">0/128</span>
-            <span class="users-text">USUARIOS</span>
-          </div>
+      <!-- USUARIOS (DERECHA) -->
+      <div class="info-box users-box">
+        <div class="users-content">
+          <span class="users-number" id="online-players">0/128</span>
+          <span class="users-text">USUARIOS</span>
         </div>
       </div>
     </div>
@@ -166,7 +166,7 @@
       <!-- COLUMNA DERECHA -->
       <div class="right-column">
         <!-- SERVICIOS Y FACTURAS -->
-        <div class="services-facturas">
+        <div class="services-facturas-column">
           <!-- SERVICIOS -->
           <div class="vertical-box servicios-box">
             <div class="box-header">
@@ -178,14 +178,11 @@
             </div>
           </div>
 
-          <!-- FACTURAS -->
-          <div class="vertical-box facturas-box">
-            <div class="box-header">
-              <i class="fa-solid fa-file-invoice-dollar"></i>
+          <!-- FACTURAS (BOTÓN HORIZONTAL) -->
+          <div class="btn-horizontal facturas-general-btn" id="facturas-general-btn">
+            <div class="btn-bg"></div>
+            <div class="btn-content-horizontal">
               <span>FACTURAS</span>
-            </div>
-            <div class="box-content" id="facturas-list">
-              <!-- Contenido dinámico -->
             </div>
           </div>
         </div>
@@ -249,6 +246,38 @@
       </div>
     </div>
     <div class="close-robos-btn" id="close-robos-btn">
+      <i class="fa-solid fa-xmark"></i>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FACTURAS -->
+<div class="modal-overlay" id="facturas-modal" style="display: none;">
+  <div class="modal-facturas">
+    <div class="facturas-left">
+      <div class="facturas-header">
+        <i class="fa-solid fa-file-invoice-dollar"></i>
+        <span>FACTURAS PENDIENTES</span>
+      </div>
+      <div class="facturas-list" id="facturas-modal-list">
+        <!-- Se llenará dinámicamente -->
+      </div>
+    </div>
+    <div class="facturas-right">
+      <div class="normas-facturas-header">
+        <i class="fa-solid fa-book"></i>
+        <span>NORMAS Y PAUTAS A TENER</span>
+      </div>
+      <div class="normas-facturas-content" id="normas-facturas-content">
+        - Las facturas deben pagarse en un plazo máximo establecido.
+        - El impago de facturas puede resultar en sanciones adicionales.
+        - Puedes pagar las facturas directamente desde este menú.
+        - El dinero se tomará automáticamente de tu cuenta bancaria.
+        - Si no tienes fondos suficientes, no podrás pagar la factura.
+        - Contacta con la facción correspondiente si hay algún error.
+      </div>
+    </div>
+    <div class="close-facturas-btn" id="close-facturas-btn">
       <i class="fa-solid fa-xmark"></i>
     </div>
   </div>

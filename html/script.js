@@ -15,7 +15,9 @@ window.addEventListener('message', (event) => {
     document.getElementById('exit-modal').style.display = 'flex';
   } else if (data.type === 'openRobosModal') {
     openRobosModal(data.robos, data.normas, data.policiasOnDuty);
-  }
+  } else if (data.type === 'openFacturasModal') {
+  openFacturasModal(data.facturas, data.normas);
+}
 })
 
 // Modal Exit
@@ -66,6 +68,88 @@ function openRobosModal(robos, normas, policiasOnDuty) {
 
 document.getElementById('close-robos-btn').addEventListener('click', () => {
   document.getElementById('robos-modal').style.display = 'none';
+})
+
+// Modal Facturas
+function openFacturasModal(facturas, normas) {
+  const facturasList = document.getElementById('facturas-modal-list');
+  facturasList.innerHTML = '';
+  
+  if (!facturas || facturas.length === 0) {
+    facturasList.innerHTML = '<div class="facturas-empty">NO TIENES FACTURAS PENDIENTES</div>';
+  } else {
+    facturas.forEach(factura => {
+      const facturaItem = document.createElement('div');
+      facturaItem.className = 'factura-item';
+      
+      // Parsear concepts si es string JSON
+      let conceptsText = '';
+      try {
+        const concepts = JSON.parse(factura.concepts);
+        conceptsText = concepts.join('<br>');
+      } catch(e) {
+        conceptsText = factura.concepts || 'Sin detalles';
+      }
+      
+      // Formatear fecha
+      const fecha = new Date(factura.date);
+      const fechaStr = fecha.toLocaleDateString('es-ES');
+      
+      facturaItem.innerHTML = `
+        <div class="factura-header-row">
+          <span class="factura-title">${factura.title}</span>
+          <span class="factura-price">$${factura.price.toLocaleString()}</span>
+        </div>
+        <div class="factura-info">
+          <div><strong>De:</strong> ${factura.author}</div>
+          <div><strong>Fecha:</strong> ${fechaStr}</div>
+          <div><strong>ID:</strong> #${factura.id}</div>
+        </div>
+        <div class="factura-concepts">
+          <strong>Conceptos:</strong><br>
+          ${conceptsText}
+        </div>
+        <button class="factura-pagar-btn" data-factura-id="${factura.id}">
+          PAGAR FACTURA
+        </button>
+      `;
+      
+      facturasList.appendChild(facturaItem);
+    });
+    
+    // Event listeners para botones de pagar
+    document.querySelectorAll('.factura-pagar-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const facturaId = this.getAttribute('data-factura-id');
+        
+        fetch(`https://AX_PauseMenu/pagarFactura`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ facturaId: parseInt(facturaId) })
+        });
+      });
+    });
+  }
+  
+  // Actualizar normas
+  if (normas) {
+    document.getElementById('normas-facturas-content').innerText = normas;
+  }
+  
+  document.getElementById('facturas-modal').style.display = 'flex';
+}
+
+// Botón Facturas
+document.getElementById('facturas-general-btn').addEventListener('click', () => {
+  fetch(`https://AX_PauseMenu/facturas`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  });
+})
+
+document.getElementById('close-facturas-btn').addEventListener('click', () => {
+  document.getElementById('facturas-modal').style.display = 'none';
 })
 
 const updateMenu = (data) => {
@@ -137,28 +221,51 @@ function updateNegociosYServicios(negocios, serviciosEspeciales) {
     });
   }
   
-  // Luego agregar negocios
-  if (negocios && negocios.length > 0) {
-    negocios.forEach(negocio => {
-      const abierto = negocio.open || negocio.isOpen || false;
-      const nombre = negocio.label || negocio.name || negocio.nombre || 'Sin nombre';
-      const logo = negocio.logo || negocio.image || 'images/guest.png';
-      const coords = negocio.coords || negocio.coordenadas || null;
-      
-      const negocioCard = document.createElement('div');
-      negocioCard.className = `negocio-card ${abierto ? 'abierto' : 'cerrado'}`;
-      
-      negocioCard.innerHTML = `
-        <img src="${logo}" class="negocio-logo" alt="${nombre}" onerror="this.src='images/guest.png'">
-        <div class="negocio-nombre">${nombre}</div>
-        <div class="negocio-ubicacion-btn" data-coords='${JSON.stringify(coords)}' data-nombre="${nombre}">
-          <i class="fa-solid fa-location-dot"></i>
-        </div>
-      `;
-      
-      negociosList.appendChild(negocioCard);
-    });
-  }
+// Ordenar negocios: abiertos primero
+if (negocios && negocios.length > 0) {
+  // Ordenar array: abiertos primero, cerrados después
+  negocios.sort((a, b) => {
+    const abiertoA = a.isOpen === true || a.open === true;
+    const abiertoB = b.isOpen === true || b.open === true;
+    
+    if (abiertoB && !abiertoA) return 1;
+    if (abiertoA && !abiertoB) return -1;
+    return 0;
+  });
+  
+  // Agregar negocios ya ordenados
+  negocios.forEach(negocio => {
+    const abierto = negocio.open || negocio.isOpen || false;
+    const nombre = negocio.label || negocio.name || negocio.nombre || 'Sin nombre';
+    const logo = negocio.logo || negocio.image || 'images/guest.png';
+    
+    // Extraer coordenadas correctamente
+    let coords = null;
+    if (negocio.marker && negocio.marker.coords) {
+      coords = {
+        x: negocio.marker.coords.x,
+        y: negocio.marker.coords.y,
+        z: negocio.marker.coords.z || 0.0
+      };
+    }
+    
+    const coordsData = coords ? JSON.stringify(coords) : 'null';
+    
+    const negocioCard = document.createElement('div');
+    negocioCard.className = `negocio-card ${abierto ? 'abierto' : 'cerrado'}`;
+    
+    negocioCard.innerHTML = `
+      <img src="${logo}" class="negocio-logo" alt="${nombre}" onerror="this.src='images/guest.png'">
+      <div class="negocio-nombre">${nombre}</div>
+      <div class="negocio-ubicacion-btn" data-coords='${coordsData}' data-nombre="${nombre}">
+        <i class="fa-solid fa-location-dot"></i>
+      </div>
+    `;
+    
+    negociosList.appendChild(negocioCard);
+  });
+}
+
   
   if ((!negocios || negocios.length === 0) && (!serviciosEspeciales || serviciosEspeciales.length === 0)) {
     negociosList.innerHTML = '<div style="text-align: center; opacity: 0.6; padding: 20px;">No hay servicios disponibles</div>';
@@ -185,8 +292,17 @@ function updateNegociosYServicios(negocios, serviciosEspeciales) {
       const coordsStr = this.getAttribute('data-coords');
       const nombre = this.getAttribute('data-nombre');
       
+      console.log('Coordenadas recibidas:', coordsStr); // Debug
+      
+      if (coordsStr === 'null' || !coordsStr) {
+        console.error('No hay coordenadas disponibles para este negocio');
+        return;
+      }
+      
       try {
         const coords = JSON.parse(coordsStr);
+        
+        console.log('Coordenadas parseadas:', coords); // Debug
         
         if (coords && coords.x && coords.y) {
           fetch(`https://AX_PauseMenu/marcarNegocio`, {
@@ -194,9 +310,11 @@ function updateNegociosYServicios(negocios, serviciosEspeciales) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ coords: coords, nombre: nombre })
           });
+        } else {
+          console.error('Coordenadas inválidas:', coords);
         }
       } catch(error) {
-        console.error('Error al marcar ubicación:', error);
+        console.error('Error al marcar ubicación:', error, coordsStr);
       }
     });
   });
@@ -216,7 +334,11 @@ function updateNegocios(negocios) {
     const abierto = negocio.open || negocio.isOpen || false;
     const nombre = negocio.label || negocio.name || negocio.nombre || 'Sin nombre';
     const logo = negocio.logo || negocio.image || 'images/guest.png';
-    const coords = negocio.coords || negocio.coordenadas || null;
+    const coords = negocio.marker && negocio.marker.coords ? {
+      x: negocio.marker.coords.x,
+      y: negocio.marker.coords.y,
+      z: negocio.marker.coords.z
+    } : null;
     
     const negocioCard = document.createElement('div');
     negocioCard.className = `negocio-card ${abierto ? 'abierto' : 'cerrado'}`;
@@ -263,7 +385,8 @@ function updateServicios(servicios) {
   const serviciosConfig = [
     { job: 'police', titulo: 'VCPD-POLICIA', icono: 'images/police.png', clase: 'police' },
     { job: 'ambulance', titulo: 'EMS-MEDICOS', icono: 'images/ems.png', clase: 'ambulance' },
-    { job: 'taxi', titulo: 'TAXI-DOWNTOWN', icono: 'images/taxi.png', clase: 'taxi' }
+    { job: 'taxi', titulo: 'TAXI-DOWNTOWN', icono: 'images/taxi.png', clase: 'taxi' },
+    { job: 'dynasty8', titulo: 'DYNASTY 8', icono: 'images/meca.png', clase: 'dynasty8' }
   ];
   
   serviciosConfig.forEach(servicio => {
@@ -290,13 +413,22 @@ function updateServicios(servicios) {
 }
 
 const hideMenu = () => {
-  document.getElementById('page').style.display = 'none';
-  document.getElementById('page').style.backgroundColor = 'transparent';
+  const container = document.querySelector('.container');
+  container.classList.add('closing');
+  
+  setTimeout(() => {
+    document.getElementById('page').style.display = 'none';
+    document.getElementById('page').style.backgroundColor = 'transparent';
+    container.classList.remove('closing');
+  }, 400); // Tiempo de la animación
 }
 
 const showMenu = () => {
   document.getElementById('page').style.display = 'flex';
   document.getElementById('page').style.backgroundColor = 'rgba(17, 17, 17, 0.74)';
+  
+  const container = document.querySelector('.container');
+  container.classList.remove('closing');
 }
 
 // Botón de ajustes
@@ -392,6 +524,7 @@ document.addEventListener('keydown', (event) => {
     // Cerrar modales si están abiertos
     const exitModal = document.getElementById('exit-modal');
     const robosModal = document.getElementById('robos-modal');
+    const facturasModal = document.getElementById('facturas-modal');
     
     if (exitModal.style.display === 'flex') {
       exitModal.style.display = 'none';
@@ -400,6 +533,11 @@ document.addEventListener('keydown', (event) => {
     
     if (robosModal.style.display === 'flex') {
       robosModal.style.display = 'none';
+      return;
+    }
+    
+    if (facturasModal.style.display === 'flex') {
+      facturasModal.style.display = 'none';
       return;
     }
     

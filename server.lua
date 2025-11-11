@@ -58,6 +58,16 @@ lib.callback.register('AX_PauseMenu:GetPlayerData', function(source)
     servicios['taxi'] = 0
   end
 
+  -- Dynasty 8 - Contar manualmente
+  local dynasty8Count = 0
+  local allPlayers = ESX.GetExtendedPlayers()
+  for _, xPlayer in pairs(allPlayers) do
+    if xPlayer.job.name == 'dynasty8' then
+      dynasty8Count = dynasty8Count + 1
+    end
+  end
+  servicios['dynasty8'] = dynasty8Count
+
   -- Obtener negocios
   local negocios = exports['AX_BusinessTab']:GetAllBusinesses() or {}
   local serviciosEspeciales = Config.ServiciosEspeciales or {}
@@ -259,6 +269,55 @@ lib.callback.register('AX_PauseMenu:GetNegocios', function(source)
   end
   
   return businesses
+end)
+
+-- Callback para obtener facturas
+lib.callback.register('AX_PauseMenu:GetFacturas', function(source)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  if not xPlayer then return {} end
+  
+  local identifier = xPlayer.identifier
+  local facturas = exports['origen_police']:GetUnpayedBills(identifier) or {}
+  
+  return facturas
+end)
+
+-- Callback para pagar factura
+lib.callback.register('AX_PauseMenu:PagarFactura', function(source, facturaId)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  if not xPlayer then 
+    return false, 'Error al obtener jugador'
+  end
+  
+  local identifier = xPlayer.identifier
+  local facturas = exports['origen_police']:GetUnpayedBills(identifier) or {}
+  
+  -- Buscar la factura
+  local factura = nil
+  for _, f in ipairs(facturas) do
+    if f.id == facturaId then
+      factura = f
+      break
+    end
+  end
+  
+  if not factura then
+    return false, 'Factura no encontrada'
+  end
+  
+  -- Verificar dinero en banco
+  local bank = xPlayer.getAccount('bank').money
+  if bank < factura.price then
+    return false, 'No tienes suficiente dinero en el banco ($' .. factura.price .. ')'
+  end
+  
+  -- Remover dinero
+  xPlayer.removeAccountMoney('bank', factura.price)
+  
+  -- Marcar factura como pagada en la base de datos
+  MySQL.update('UPDATE origen_police_bills SET payed = 1 WHERE id = ?', {facturaId})
+  
+  return true, 'Factura pagada correctamente: $' .. factura.price
 end)
 
 -- Log de inicio

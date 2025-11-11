@@ -2,6 +2,7 @@ ESX = exports["es_extended"]:getSharedObject()
 -- Variables locales
 local isNuiReady = false
 local inPauseMenu = false
+local tabletProp = nil
 
 -- Registrar comando si está habilitado
 if Config.EnableCommand then
@@ -48,6 +49,29 @@ function PauseMenu()
     return
   end
 
+  -- Reproducir animación de tablet con prop
+  local playerPed = PlayerPedId()
+  local dict = "amb@code_human_in_bus_passenger_idles@female@tablet@base"
+  local prop = "prop_cs_tablet"
+  
+  RequestAnimDict(dict)
+  while not HasAnimDictLoaded(dict) do
+    Wait(10)
+  end
+  
+  RequestModel(GetHashKey(prop))
+  while not HasModelLoaded(GetHashKey(prop)) do
+    Wait(10)
+  end
+  
+  local tablet = CreateObject(GetHashKey(prop), 0, 0, 0, true, true, true)
+  AttachEntityToEntity(tablet, playerPed, GetPedBoneIndex(playerPed, 60309), 0.03, 0.002, -0.0, 10.0, 160.0, 0.0, true, true, false, true, 1, true)
+  
+  TaskPlayAnim(playerPed, dict, "base", 8.0, -8.0, -1, 50, 0, false, false, false)
+  
+  -- Guardar referencia del prop para eliminarlo después
+  tabletProp = tablet
+
   -- Obtener skills del gym
   local skills = {
     driving = exports["vms_gym"]:getSkill("driving") or 0,
@@ -92,6 +116,14 @@ RegisterNUICallback('close', function(data, cb)
     type = "close"
   })
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+  
   TriggerScreenblurFadeOut(5000)
   TriggerEvent('AX_PauseMenu:OnClose')
   cb('ok')
@@ -106,6 +138,15 @@ RegisterNUICallback('settings', function(data, cb)
   SendNUIMessage({
     type = "close"
   })
+
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   inPauseMenu = false
   cb('ok')
 end)
@@ -122,6 +163,14 @@ end)
 RegisterNUICallback('cambiarPersonaje', function(data, cb)
   ExecuteCommand('logout')
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   inPauseMenu = false
   SetNuiFocus(false, false)
   SendNUIMessage({ type = "close" })
@@ -145,6 +194,15 @@ RegisterNUICallback('map', function(data, cb)
   SendNUIMessage({
     type = "close"
   })
+
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   inPauseMenu = false
   ActivateFrontendMenu(GetHashKey('FE_MENU_VERSION_MP_PAUSE'), 1, -1) 
   cb('ok')
@@ -215,6 +273,14 @@ end)
 RegisterNUICallback('racing', function(data, cb)
   exports.nx_racing:openTablet()
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   -- Cerrar el pause menu
   inPauseMenu = false
   SetNuiFocus(false, false)
@@ -228,6 +294,14 @@ end)
 RegisterNUICallback('report', function(data, cb)
   ExecuteCommand('report')
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   -- Cerrar el pause menu
   inPauseMenu = false
   SetNuiFocus(false, false)
@@ -241,6 +315,14 @@ end)
 RegisterNUICallback('daily', function(data, cb)
   ExecuteCommand('dailyreward')
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   -- Cerrar el pause menu
   inPauseMenu = false
   SetNuiFocus(false, false)
@@ -254,6 +336,14 @@ end)
 RegisterNUICallback('editor', function(data, cb)
   ExecuteCommand('rockstar')
   
+  -- Detener animación de tablet y eliminar prop
+  local playerPed = PlayerPedId()
+  ClearPedTasks(playerPed)
+  if tabletProp then
+    DeleteObject(tabletProp)
+    tabletProp = nil
+  end
+
   -- Cerrar el pause menu
   inPauseMenu = false
   SetNuiFocus(false, false)
@@ -279,14 +369,48 @@ RegisterNUICallback('robos', function(data, cb)
   cb('ok')
 end)
 
+-- Callback FACTURAS
+RegisterNUICallback('facturas', function(data, cb)
+  -- Obtener facturas desde el servidor
+  lib.callback('AX_PauseMenu:GetFacturas', false, function(facturas)
+    SendNUIMessage({
+      type = "openFacturasModal",
+      facturas = facturas,
+      normas = Config.NormasFacturas
+    })
+  end)
+  
+  cb('ok')
+end)
+
+-- Callback PAGAR FACTURA
+RegisterNUICallback('pagarFactura', function(data, cb)
+  local facturaId = data.facturaId
+  
+  lib.callback('AX_PauseMenu:PagarFactura', false, function(success, message)
+    if success then
+      ESX.ShowNotification(message, 'success')
+      -- Recargar facturas
+      lib.callback('AX_PauseMenu:GetFacturas', false, function(facturas)
+        SendNUIMessage({
+          type = "openFacturasModal",
+          facturas = facturas
+        })
+      end)
+    else
+      ESX.ShowNotification(message, 'error')
+    end
+  end, facturaId)
+  
+  cb('ok')
+end)
+
 -- Callback para marcar ubicación de negocio
 RegisterNUICallback('marcarNegocio', function(data, cb)
   local coords = data.coords
   
-  print('Marcando negocio:', json.encode(data)) -- Debug
-  
   if coords and coords.x and coords.y then
-    local x, y, z = coords.x, coords.y, coords.z or 0.0
+    local x, y, z = tonumber(coords.x), tonumber(coords.y), tonumber(coords.z or 0.0)
     
     -- Crear blip en el mapa
     local blip = AddBlipForCoord(x, y, z)
@@ -299,17 +423,19 @@ RegisterNUICallback('marcarNegocio', function(data, cb)
     AddTextComponentString(data.nombre or "Negocio")
     EndTextCommandSetBlipName(blip)
     
-    -- Establecer waypoint
+    -- Establecer waypoint (CORREGIDO)
     SetNewWaypoint(x, y)
     
     ESX.ShowNotification('Ubicación marcada: ' .. (data.nombre or 'Negocio'))
     
     -- Eliminar blip después de 30 segundos
     SetTimeout(30000, function()
-      RemoveBlip(blip)
+      if DoesBlipExist(blip) then
+        RemoveBlip(blip)
+      end
     end)
   else
-    print('Error: Coordenadas inválidas')
+    ESX.ShowNotification('Error: Coordenadas inválidas', 'error')
   end
   
   cb('ok')

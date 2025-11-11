@@ -37,6 +37,29 @@ body {
   align-items: center;
 }
 
+/* Animaciones para el pause menu */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -44,6 +67,11 @@ body {
   gap: 10px;
   align-items: center;
   justify-content: center;
+  animation: slideInUp 0.4s ease-out;
+}
+
+.container.closing {
+  animation: slideOutDown 0.4s ease-in forwards;
 }
 
 /* ===== HEADER SECTION ===== */
@@ -52,6 +80,9 @@ body {
   flex-direction: column;
   width: 100%;
   align-items: center;
+  position: relative;
+  z-index: 10;
+  margin-bottom: -30px;
 }
 
 .player-avatar {
@@ -59,7 +90,7 @@ body {
   height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--primary);
+  border: 4px solid rgb(255 255 255);
   background-color: white;
 }
 
@@ -79,6 +110,9 @@ body {
   justify-content: space-between;
   gap: 15px;
   width: 100%;
+  left: -10%;
+  position: relative;
+  z-index: 1;
 }
 
 .info-box {
@@ -94,12 +128,23 @@ body {
 /* Banco */
 .bank-box {
   min-width: 180px;
-  background-color: rgba(0, 100, 0, 0.3); /* Verde oscuro */
+  background-color: rgb(255 255 255 / 30%); /* Verde oscuro */
+}
+
+.bank-box i{
+  color: black;
+  font-size: 23px;
+}
+
+/* Contenedor izquierdo (Banco + Vicoin) */
+.left-info {
+  display: flex;
+  gap: 10px;
 }
 
 .vicoin-box {
   min-width: 150px;
-  background-color: rgba(100, 0, 100, 0.3); /* Morado oscuro */
+  background-color: rgb(255 255 255 / 30%); /* Morado oscuro */
 }
 
 .info-content {
@@ -128,6 +173,8 @@ body {
   gap: 10px;
   flex: 1;
   justify-content: center;
+  align-items: center;
+  margin: 0 20px;
 }
 
 .job-box,
@@ -140,10 +187,23 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Vicoins y Usuarios (derecha) */
-.right-info {
-  display: flex;
-  gap: 10px;
+/* Logo del servidor */
+.users-box::after {
+  content: '';
+  position: absolute;
+  right: -161px;
+  top: 80%;
+  transform: translateY(-50%);
+  width: 170px;
+  height: 140px;
+  background-image: url('images/LogoV2.png'); /* Cambia por tu logo */
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 100;
+}
+
+.users-box {
+  position: relative;
 }
 
 .vicoin-box {
@@ -151,9 +211,8 @@ body {
 }
 
 .vicoin-box i {
-  font-size: 28px;
-  color: var(--secondary);
-  filter: drop-shadow(0px 0px 20px var(--primary-shadow));
+  font-size: 27px;
+  color: rgb(0 0 0);
 }
 
 .users-box {
@@ -396,6 +455,11 @@ body {
   cursor: pointer;
 }
 
+.facturas-general-btn {
+  flex: 0.43; 
+  min-height: 80px; /* Altura mínima */
+}
+
 .btn-horizontal:hover {
   filter: brightness(1.2);
 }
@@ -419,6 +483,10 @@ body {
 
 .racing-btn .btn-bg {
   background-image: url('images/editorfon.png');
+}
+
+.facturas-general-btn .btn-bg {
+  background-image: url('images/facturas_bg.png');
 }
 
 .btn-horizontal .btn-bg::before {
@@ -535,8 +603,8 @@ body {
   overflow-y: auto;
 }
 
-/* SERVICIOS Y FACTURAS */
-.services-facturas {
+/* SERVICIOS Y FACTURAS COLUMNA */
+.services-facturas-column {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -544,11 +612,7 @@ body {
 }
 
 .servicios-box {
-  height: 55%;
-}
-
-.facturas-box {
-  height: 45%;
+  flex: 1;
 }
 
 /* NEGOCIOS */
@@ -592,8 +656,8 @@ body {
 }
 
 .robos-btn img {
-  width: 50px;
-  height: 50px;
+  width: 65px;
+  height: 65px;
 }
 
 /* MODALES */
@@ -887,7 +951,11 @@ body {
   background-image: url('images/emspor.png');
 }
 
-.servicio-card.realestate {
+.servicio-card.taxi {
+  background-image: url('images/taxipor.png');
+}
+
+.servicio-card.dynasty8 {
   background-image: url('images/mecapor.png');
 }
 
@@ -1026,7 +1094,222 @@ body {
   color: #3b82f6;
 }
 
-/* Servicio Taxi en tabla de servicios */
-.servicio-card.taxi {
-  background-image: url('images/taxipor.png');
+/* BOTÓN DE FACTURAS */
+.facturas-btn-box {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.facturas-btn-box:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
+.facturas-click-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.facturas-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.6;
+}
+
+.facturas-preview i {
+  font-size: 40px;
+  color: var(--secondary);
+}
+
+.facturas-preview span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+}
+
+/* MODAL FACTURAS */
+.modal-facturas {
+  background: rgb(12 12 12);
+  border: 3px solid #353535;
+  border-radius: 15px;
+  padding: 25px;
+  display: flex;
+  gap: 20px;
+  width: 1150px;
+  height: 600px;
+  position: relative;
+}
+
+.facturas-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.facturas-right {
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.facturas-header,
+.normas-facturas-header {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 12px 15px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #353535;
+}
+
+.facturas-header i,
+.normas-facturas-header i {
+  font-size: 20px;
+  color: var(--secondary);
+}
+
+.facturas-header span,
+.normas-facturas-header span {
+  font-family: 'Fugaz One';
+  font-size: 18px;
+}
+
+.facturas-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Scrollbar para facturas */
+.facturas-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.facturas-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.facturas-list::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 10px;
+}
+
+.facturas-list::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+.factura-item {
+  background: rgba(20, 20, 20, 0.8);
+  border: 2px solid #353535;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 12px;
+  gap: 5px;
+}
+
+.factura-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.factura-title {
+  font-family: 'Fugaz One';
+  text-transform: uppercase;
+  font-size: 36px;
+  color: #ef4444;
+}
+
+.factura-price {
+  font-family: 'Fugaz One';
+  font-size: 25px;
+  color: #22c55e;
+}
+
+.factura-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.factura-concepts {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-top: 5px;
+}
+
+.factura-pagar-btn {
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: 'Fugaz One';
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 5px;
+}
+
+.factura-pagar-btn:hover {
+  background: #16a34a;
+  transform: scale(1.05);
+}
+
+.factura-pagar-btn:active {
+  transform: scale(0.95);
+}
+
+.normas-facturas-content {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #353535;
+  border-radius: 10px;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.close-facturas-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background: rgba(239, 68, 68, 0.8);
+  border: 2px solid #ef4444;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.close-facturas-btn:hover {
+  background: #ef4444;
+}
+
+.facturas-empty {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.6;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
 }

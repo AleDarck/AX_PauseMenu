@@ -1,6 +1,6 @@
 Config = {}
 
-Config.BotToken = 'MTE4MDY1NjA3NjAyNzMzMDYwMg.GtEntC.TP_rlG1XiQAXqQEX_2BFFDxt_zZ-G4TN203XPA' -- Opcional: Si está vacío, se mostrará imagen por defecto
+Config.BotToken = '' -- Opcional: Si está vacío, se mostrará imagen por defecto
 
 Config.PauseMenuTick = 5
 
@@ -20,20 +20,24 @@ Config.ServiciosEmergencia = {'police', 'ambulance'}
 -- [[ ROBOS DISPONIBLES ]] --
 Config.Robos = {
   {
-    nombre = 'BANCO CENTRAL',
-    policiasRequeridos = 2
-  },
-  {
-    nombre = 'JOYERÍA',
+    nombre = 'ROBO ATMs',
     policiasRequeridos = 3
   },
   {
-    nombre = 'BANCO FLEECA',
-    policiasRequeridos = 1
+    nombre = 'BADULAKES',
+    policiasRequeridos = 3
   },
   {
-    nombre = 'PACIFIC STANDARD',
-    policiasRequeridos = 4
+    nombre = 'BANCO PEQUEÑO',
+    policiasRequeridos = 5
+  },
+  {
+    nombre = 'JOYERIA',
+    policiasRequeridos = 5
+  },
+  {
+    nombre = 'MAZE BANK',
+    policiasRequeridos = 8
   }
 }
 
@@ -44,6 +48,15 @@ Config.NormasRobos = [[
 - Respetar el rol policial
 - No combatir en zonas seguras
 - Seguir las indicaciones del staff
+]]
+
+Config.NormasFacturas = [[
+- Las facturas deben pagarse en un plazo máximo establecido.
+- El impago de facturas puede resultar en sanciones adicionales.
+- Puedes pagar las facturas directamente desde este menú.
+- El dinero se tomará automáticamente de tu cuenta bancaria.
+- Si no tienes fondos suficientes, no podrás pagar la factura.
+- Contacta con la facción correspondiente si hay algún error.
 ]]
 
 -- [[ SERVICIOS DISPONIBLES ]] --
@@ -65,6 +78,12 @@ Config.ServiciosInfo = {
     titulo = 'TAXI-DOWNTOWN',
     icono = 'images/taxi.png',
     clase = 'taxi'
+  },
+  {
+    job = 'dynasty8',
+    titulo = 'DYNASTY 8',
+    icono = 'images/dynasty8.png',
+    clase = 'dynasty8'
   }
 }
 
